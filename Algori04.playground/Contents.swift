@@ -28,42 +28,51 @@ print(1)
 let a = words.filter {
     return 5 == $0.count && $0.hasPrefix("fro")
 }
-a
+
 //words.hasPrefix("fro")
 //words.hasSuffix("odo")
-
+let a1 = words.sorted { $0.count < $1.count}
+print(a1)
 func solution0504(_ words:[String], _ queries:[String]) -> [Int] {
     var result: [Int] = []
+    let sortedWords = words.sorted { $0.count < $1.count}
     
     for query in queries {
         var tempQuery = query
         var wordPrefix = ""
         var wordSuffix = ""
         if query.hasPrefix("?") {
-            let first = tempQuery.firstIndex(of: "?")
-            let last = tempQuery.lastIndex(of: "?")
-            tempQuery.removeSubrange(first!...last!)
-//            tempQuery.removeAll { (cha) -> Bool in
-//                return cha == "?"
-//            }
+
+            tempQuery.removeAll { (cha) -> Bool in
+                return cha == "?"
+            }
             wordSuffix = tempQuery
         } else {
-            let first = tempQuery.firstIndex(of: "?")
-            let last = tempQuery.lastIndex(of: "?")
-            tempQuery.removeSubrange(first!...last!)
 
-//            tempQuery.removeAll { (cha) -> Bool in
-//                return cha == "?"
-//            }
+
+            tempQuery.removeAll { (cha) -> Bool in
+                return cha == "?"
+            }
             wordPrefix = tempQuery
         }
-        let temp = words.filter{
-            if wordPrefix != "" {
-                return query.count == $0.count && $0.hasPrefix(wordPrefix)
-            } else {
-                return query.count == $0.count && $0.hasSuffix(wordSuffix)
+        var temp: [String] = []
+        for word in sortedWords {
+            guard query.count >= word.count else { break }
+            if wordPrefix != "" && query.count == word.count && word.hasPrefix(wordPrefix) {
+                 temp.append(word)
+            } else if wordSuffix != "" && query.count == word.count && word.hasSuffix(wordSuffix) {
+                 temp.append(word)
             }
+           
         }
+        
+//        let temp = words.filter{
+//            if wordPrefix != "" {
+//                return query.count == $0.count && $0.hasPrefix(wordPrefix)
+//            } else {
+//                return query.count == $0.count && $0.hasSuffix(wordSuffix)
+//            }
+//        }
         result.append(temp.count)
     }
     
